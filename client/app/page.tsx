@@ -1,12 +1,11 @@
 "use client";
-import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { Issue } from "@/app/types";
 
 export default function Home() {
   const [allIssues, setAllIssues] = useState<Issue[] | []>([]);
-  const [id, setId] = useState("");
-  const [data, setData] = useState(null);
+  const [id, setId] = useState<string>("");
+  const [data, setData] = useState<Issue | null>(null);
   const [updateData, setUpdateData] = useState("");
 
   const handleInputChange = (e: { target: { value: React.SetStateAction<string> } }) => {
@@ -19,7 +18,7 @@ export default function Home() {
 
   const handleView = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/api/issues/${id}`); //TODO:
+      const response = await fetch(`http://localhost:8080/api/issues/${id}`);
       const result = await response.json();
       setData(result);
     } catch (error) {
@@ -42,7 +41,6 @@ export default function Home() {
   const handleUpdate = async () => {
     try {
       const response = await fetch(`http://localhost:8080/api/issues/${id}`, {
-        //TODO:
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -83,7 +81,7 @@ export default function Home() {
           <ul>
             {allIssues.map((issue) => (
               <li>
-                [{issue.id}] - {issue.description}
+                [{issue.id}] - {issue.title}
               </li>
             ))}
           </ul>
@@ -93,17 +91,26 @@ export default function Home() {
         <input type="text" value={id} onChange={handleInputChange} placeholder="Enter ID" />
         <button onClick={handleView}>View</button>
         <button onClick={handleDelete}>Delete</button>
-        <input
-          type="text"
-          value={updateData}
-          onChange={handleUpdateChange}
-          placeholder="Enter new data"
-        />
-        <button onClick={handleUpdate}>Update</button>
+        <div>
+          <input
+            type="text"
+            value={updateData}
+            onChange={handleUpdateChange}
+            placeholder="Enter new title"
+          />
+          <input
+            type="text"
+            value={updateData}
+            onChange={handleUpdateChange}
+            placeholder="Enter new description"
+          />
+          <button onClick={handleUpdate}>Update</button>
+        </div>
+
         {data && (
           <div>
-            <h2>Data for ID: {id}</h2>
-            <pre>{JSON.stringify(data, null, 2)}</pre>
+            <h2>Data for Issue #{id}</h2>
+            {`${data.title} | ${data.description}`}
           </div>
         )}
       </div>

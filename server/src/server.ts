@@ -11,8 +11,14 @@ app.get("/", (req: Request, res: Response) => {
   res.send('<h1 style="font-family: sans-serif; padding: 50px;">This is the root route!</h1>');
 });
 
-app.get("/api", (req, res) => {
+app.get("/api/issues", (req, res) => {
   res.status(200).json(issueStore);
+});
+
+app.get("/api/issues/:id", (req, res) => {
+  const issueId: string = req.params.id;
+  const issue = issueStore.find((issue) => issue.id === issueId);
+  res.status(200).json(issue);
 });
 
 app.use((req, res, next) => {
